@@ -35,7 +35,7 @@ func NewServer(properties *props.Properties) *Server {
 // ConfigureAPI configures the API with all the endpoints with respective handlers
 func (s *Server) ConfigureAPI(myService service.SearchCompositionHandler) {
 	s.doOnce.Do(func() {
-		configureApi(s.api, s.contextRoot, myService, s.port, s.defaultQuantity)
+		configureApi(s.api, s.contextRoot, myService, s.defaultQuantity)
 	})
 
 	srv := &http.Server{

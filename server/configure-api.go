@@ -14,7 +14,7 @@ const (
 	endpoint = "/top-list"
 )
 
-func configureApi(handler api.DomainHandler, contextRoot string, service service.SearchCompositionHandler, port int, defaultQuantity int) {
+func configureApi(handler api.DomainHandler, contextRoot string, service service.SearchCompositionHandler, defaultQuantity int) {
 
 	// Setup global middleware like Logging, Panic handler
 	handler = handler.WithGlobalMiddleware(dontPanic)

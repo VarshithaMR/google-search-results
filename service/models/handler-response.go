@@ -1,7 +1,11 @@
 package models
 
 type HandlerResponse struct {
-	Query         string   `json:"user query"`
-	ResponseTime  string   `json:"queryTime"`
-	ResponseItems []string `json:"top links"`
+	ResponseTime  float64                `json:"queryTime"`
+	ResponseItems []*HandlerResponseItem `json:"top links"`
+}
+
+type HandlerResponseItem struct {
+	Title string `json:"title,omitempty"`
+	Link  string `json:"link,omitempty"`
 }

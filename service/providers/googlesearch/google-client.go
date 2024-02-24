@@ -5,7 +5,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"google-search/cmd"
 	"google-search/service/models"
 )
 
@@ -16,6 +15,10 @@ const (
 	paramQuery    = "q"
 	paramKey      = "key"
 	paramCustomId = "cx"
+
+	envVarGoogleSearchURL      = "GOOGLE_SEARCH_URL"
+	envVarGoogleAPIKey         = "GOOGLE_API_KEY"
+	envVarCustomSearchEngineId = "GOOGLE_CUSTOM_SEARCH_ID"
 )
 
 type GoogleSearchClient interface {
@@ -41,9 +44,9 @@ func (g *search) GetSearchResults(query string) *models.GoogleSearchResponse {
 }
 
 func NewGoogleClient(properties *viper.Viper) GoogleSearchClient {
-	url := properties.GetString(cmd.EnvVarGoogleSearchURL)
-	apiKey := properties.GetString(cmd.EnvVarGoogleAPIKey)
-	searchEngineId := properties.GetString(cmd.EnvVarCustomSearchEngineId)
+	url := properties.GetString(envVarGoogleSearchURL)
+	apiKey := properties.GetString(envVarGoogleAPIKey)
+	searchEngineId := properties.GetString(envVarCustomSearchEngineId)
 
 	searchClient := resty.New()
 

@@ -14,25 +14,25 @@ import (
 )
 
 const (
-	EnvVarGoogleSearchURL      = "GOOGLE_SEARCH_URL"
-	EnvVarGoogleAPIKey         = "GOOGLE_API_KEY"
-	EnvVarCustomSearchEngineId = "GOOGLE_CUSTOM_SEARCH_ID"
+	envVarGoogleSearchURL      = "GOOGLE_SEARCH_URL"
+	envVarGoogleAPIKey         = "GOOGLE_API_KEY"
+	envVarCustomSearchEngineId = "GOOGLE_CUSTOM_SEARCH_ID"
 )
 
 func initialiseApplication() {
-	initializeConfiguration("./env/")
+	properties = initializeConfiguration("./env/")
 }
 
-func initializeConfiguration(path string) {
+func initializeConfiguration(path string) *viper.Viper {
 	viperConfigManager := viper.NewWithOptions(viper.KeyDelimiter("_"))
 	viperConfigManager.SetConfigName("application")
 	viperConfigManager.SetConfigType("yaml")
 	viperConfigManager.AddConfigPath("/etc/config/")
 	viperConfigManager.AddConfigPath(path)
-	err := viperConfigManager.BindEnv(EnvVarGoogleSearchURL, EnvVarGoogleAPIKey, EnvVarCustomSearchEngineId)
+	err := viperConfigManager.BindEnv(envVarGoogleSearchURL, envVarGoogleAPIKey, envVarCustomSearchEngineId)
 	if err != nil {
 		log.Warnf("❌ Failed to bind a configuration key to the '%v, %v, %v' environment variable with error %v",
-			EnvVarGoogleSearchURL, EnvVarGoogleAPIKey, EnvVarCustomSearchEngineId, err)
+			envVarGoogleSearchURL, envVarGoogleAPIKey, envVarCustomSearchEngineId, err)
 	}
 
 	viperConfigManager.AutomaticEnv()
@@ -48,4 +48,5 @@ func initializeConfiguration(path string) {
 	}
 
 	log.Infof("✅ Loading application config from %v", viperConfigManager.ConfigFileUsed())
+	return viperConfigManager
 }

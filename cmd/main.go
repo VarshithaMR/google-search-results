@@ -1,6 +1,8 @@
 package main
 
 import (
+	log "github.com/sirupsen/logrus"
+
 	"github.com/spf13/viper"
 
 	"google-search/props"
@@ -16,6 +18,7 @@ var (
 
 func main() {
 	initialiseApplication()
+	log.Info("✅ Initialisation of application Completed")
 
 	startApplication()
 }
@@ -26,6 +29,7 @@ func startApplication() {
 
 func startServer() {
 	providers := getProviders(properties)
+	log.Info("✅ All providers initialised")
 	handler := service.NewSearchCompositionHandler(providers)
 	servers := server.NewServer(prop)
 	servers.ConfigureAPI(handler)

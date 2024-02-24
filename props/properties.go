@@ -6,7 +6,7 @@ type Properties struct {
 
 type ServerProps struct {
 	Host        string `yaml:"host"`
-	Port        string `yaml:"port"`
+	Port        int    `yaml:"port"`
 	ContextRoot string `yaml:"context-root"`
-	NoOfResults string `yaml:"default-result-size"`
+	NoOfResults int    `yaml:"default-result-size"`
 }

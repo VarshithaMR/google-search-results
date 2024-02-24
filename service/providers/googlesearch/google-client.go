@@ -18,7 +18,7 @@ const (
 	paramCustomId = "cx"
 )
 
-type GoogleSearchInterface interface {
+type GoogleSearchClient interface {
 	GetSearchResults(string) *models.GoogleSearchResponse
 }
 
@@ -40,7 +40,7 @@ func (g *search) GetSearchResults(query string) *models.GoogleSearchResponse {
 	return response.Result().(*models.GoogleSearchResponse)
 }
 
-func NewGoogleClient(properties *viper.Viper) GoogleSearchInterface {
+func NewGoogleClient(properties *viper.Viper) GoogleSearchClient {
 	url := properties.GetString(cmd.EnvVarGoogleSearchURL)
 	apiKey := properties.GetString(cmd.EnvVarGoogleAPIKey)
 	searchEngineId := properties.GetString(cmd.EnvVarCustomSearchEngineId)

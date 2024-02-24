@@ -1,11 +1,12 @@
 package service
 
 import (
-	jsoniter "github.com/json-iterator/go"
-	"google-search/service/builder"
-	"google-search/service/builder/model"
 	"net/http"
 
+	jsoniter "github.com/json-iterator/go"
+
+	"google-search/service/builder"
+	"google-search/service/builder/model"
 	"google-search/service/providers/googlesearch"
 )
 
@@ -18,12 +19,12 @@ type SearchCompositionHandler interface {
 	GetGoogleSearchResults(http.ResponseWriter, *http.Request, int)
 }
 type Providers struct {
-	GoogleSearchClient googlesearch.GoogleSearchInterface
+	GoogleSearchClient googlesearch.GoogleSearchClient
 }
 
 func (p *Providers) GetGoogleSearchResults(writer http.ResponseWriter, request *http.Request, resultQuantity int) {
 
-	WriteResponse(writer, builder.BuildResponse("Google Search Process successful"), http.StatusOK)
+	WriteResponse(writer, builder.BuildResponse("💃🏻 ✅ Google Search Process successful"), http.StatusOK)
 }
 
 func WriteResponse(rw http.ResponseWriter, resp interface{}, responseCode int) {
@@ -38,4 +39,11 @@ func BuildResponse(message string) model.APIResponse {
 		Message: message,
 	}
 	return response
+}
+
+func NewSearchCompositionHandler(providers Providers) SearchCompositionHandler {
+
+	return &Providers{
+		GoogleSearchClient: providers.GoogleSearchClient,
+	}
 }

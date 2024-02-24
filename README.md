@@ -6,3 +6,4 @@
 # OS - macOs
 # framework - gin
 # provider : google search
+# IDE : IntelliJ IDEA

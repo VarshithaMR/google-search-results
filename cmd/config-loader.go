@@ -1,4 +1,4 @@
-package cmd
+package main
 
 /* Sample file to load the configurations from .env file
 Usage : to read the values from

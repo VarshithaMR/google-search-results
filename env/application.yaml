@@ -1,5 +1,5 @@
 server:
   host: 'localhost'
   port: 8080
-  context-root: '/google-results'
-  default-result-size: 10
+  contextroot: '/google-results'
+  resultquantity: 10

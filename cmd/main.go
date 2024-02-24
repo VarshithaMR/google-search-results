@@ -31,7 +31,7 @@ func startServer() {
 	providers := getProviders(properties)
 	log.Info("✅ All providers initialised")
 	handler := service.NewSearchCompositionHandler(providers)
-	servers := server.NewServer(prop)
+	servers := server.NewServer(prop, properties)
 	servers.ConfigureAPI(handler)
 }
 

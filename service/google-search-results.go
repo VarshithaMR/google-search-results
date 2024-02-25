@@ -2,15 +2,15 @@ package service
 
 import (
 	"errors"
-	log "github.com/sirupsen/logrus"
-	"google-search/service/models"
-	"google-search/service/validator"
 	"net/http"
 
 	jsoniter "github.com/json-iterator/go"
+	log "github.com/sirupsen/logrus"
 
 	"google-search/service/builder"
+	"google-search/service/models"
 	"google-search/service/providers/googlesearch"
+	"google-search/service/validator"
 )
 
 const (

@@ -43,6 +43,7 @@ type DomainHandler interface {
 	WithOperations(rootPath string, authorize gin.HandlerFunc, operations ...*Operations) DomainHandler
 	WithGlobalMiddleware(globalMiddleware ...gin.HandlerFunc) DomainHandler
 	Logger(context.Context, string, ...interface{})
+	ServerShutdown()
 }
 
 func (d *serviceEngine) WithShutdown(shutdown func()) DomainHandler {
@@ -71,6 +72,10 @@ func (d *serviceEngine) WithGlobalMiddleware(globalMiddleware ...gin.HandlerFunc
 
 func (d *serviceEngine) Logger(ctx context.Context, message string, arguments ...interface{}) {
 	d.logger(ctx, message, arguments)
+}
+
+func (d *serviceEngine) ServerShutdown() {
+	d.serverShutdown()
 }
 
 func createGroupWithMiddleware(group *gin.RouterGroup, globalMiddleware ...gin.HandlerFunc) *gin.RouterGroup {

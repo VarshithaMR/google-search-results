@@ -3,12 +3,15 @@ package server
 import (
 	"context"
 	"fmt"
-	"github.com/mitchellh/mapstructure"
-	"github.com/spf13/viper"
 	"net/http"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 
+	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 
 	"google-search/props"
 	"google-search/server/api"
@@ -61,4 +64,21 @@ func (s *Server) ConfigureAPI(myService service.SearchCompositionHandler) {
 	}()
 
 	s.api.Logger(context.Background(), "✅ Started server on : %s", fmt.Sprintf("http://%s:%d", s.host, s.port))
+
+	quit := make(chan os.Signal, 1)
+
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	s.api.Logger(context.Background(), "Server is shutting down ... %s", "domain-handler")
+
+	s.Shutdown()
+
+	s.api.Logger(context.Background(), "Until next time ... %s")
+	//return nil
+}
+
+// Shutdown server and clean up resources
+func (s *Server) Shutdown() {
+	s.api.ServerShutdown()
 }

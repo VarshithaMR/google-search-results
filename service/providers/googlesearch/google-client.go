@@ -16,31 +16,35 @@ const (
 	paramKey      = "key"
 	paramCustomId = "cx"
 
+	paramNum = "num"
+
 	envVarGoogleSearchURL      = "GOOGLE_SEARCH_URL"
 	envVarGoogleAPIKey         = "GOOGLE_API_KEY"
 	envVarCustomSearchEngineId = "GOOGLE_CUSTOM_SEARCH_ID"
 )
 
 type GoogleSearchClient interface {
-	GetSearchResults(string) *models.GoogleSearchResponse
+	GetSearchResults(string, int) (*models.GoogleSearchResponse, error)
 }
 
 type search struct {
 	httpClient *resty.Client
 }
 
-func (g *search) GetSearchResults(query string) *models.GoogleSearchResponse {
+func (g *search) GetSearchResults(query string, quantity int) (*models.GoogleSearchResponse, error) {
 	baseUrl := g.httpClient.BaseURL
 	response, err := g.httpClient.R().
 		SetHeader(contentType, appType).
 		SetQueryParam(paramQuery, query).
+		SetQueryParam(paramNum, string(rune(quantity))).
 		SetResult(models.GoogleSearchResponse{}).
 		Get(baseUrl + endpoint)
 	if err != nil {
 		log.Warnf("❌ Google API Search error: %s", err)
+		return nil, err
 	}
 
-	return response.Result().(*models.GoogleSearchResponse)
+	return response.Result().(*models.GoogleSearchResponse), nil
 }
 
 func NewGoogleClient(properties *viper.Viper) GoogleSearchClient {

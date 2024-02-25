@@ -49,24 +49,30 @@ func googleSearchResults(serviceRequest *models.HandlerRequest, resultQuantity i
 	)
 
 	if serviceRequest.ResultQuantity == nil {
+		//default quantity of items
 		quantity = resultQuantity
 	} else {
 		quantity = *serviceRequest.ResultQuantity
 	}
 
-	results := provider.GetSearchResults(serviceRequest.Query)
-	if len(results.ResponseItems) < quantity {
-		log.Println("😣 Less no of results than expected")
-		finalResponse = mapGResultsToService(results, len(results.ResponseItems))
-		return finalResponse, nil
+	if quantity > resultQuantity {
+		log.Infof("😣 Currently range is valid between 1 to 10")
 	}
 
-	if len(results.ResponseItems) >= quantity {
-		finalResponse = mapGResultsToService(results, quantity)
-		return finalResponse, nil
+	//call google api
+	results, err := provider.GetSearchResults(serviceRequest.Query, quantity)
+	if err != nil {
+		return nil, err
 	}
 
-	return nil, errors.New("❌ not able to form response")
+	if results == nil || results.ResponseItems == nil {
+		resultError := "❌ not able to get response"
+		log.Warnf(resultError)
+		return nil, errors.New(resultError)
+	}
+
+	finalResponse = mapGResultsToService(results, quantity)
+	return finalResponse, nil
 }
 
 func mapGResultsToService(googleResults *models.GoogleSearchResponse, quantity int) *models.HandlerResponse {

@@ -28,7 +28,7 @@ func TestBuilderResponse(test *testing.T) {
 		test.Run(t.name, func(tt *testing.T) {
 			test.Parallel()
 			if actual := BuildResponse(t.message); !reflect.DeepEqual(actual, t.expectedResponse) {
-				tt.Errorf("BuildResponse() = %v, expectedResponse %v", actual, t.expectedResponse)
+				tt.Errorf("BuildResponse() = %v, expectedResponse %v", t.expectedResponse, actual)
 			}
 		})
 	}

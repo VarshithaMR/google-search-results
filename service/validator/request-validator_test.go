@@ -62,12 +62,13 @@ func TestValidateRequest(test *testing.T) {
 
 	for _, t := range tests {
 		test.Run(t.name, func(tt *testing.T) {
+
 			tt.Parallel()
 			req, err := ValidateRequest(t.request.Body)
 			if err != nil {
-				assert.Equal(tt, err, t.err)
+				assert.Equal(tt, t.err, err)
 			} else {
-				assert.Equal(tt, req, t.expectedResponse)
+				assert.Equal(tt, t.expectedResponse, req)
 			}
 		})
 	}

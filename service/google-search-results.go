@@ -76,8 +76,10 @@ func mapGResultsToService(googleResults *models.GoogleSearchResponse, quantity i
 	)
 
 	for _, response := range googleResults.ResponseItems[:quantity] {
-		responseItem.Title = response.Title
-		responseItem.Link = response.Link
+		responseItem = &models.HandlerResponseItem{
+			Title: response.Title,
+			Link:  response.Link,
+		}
 		responseItems = append(responseItems, responseItem)
 	}
 

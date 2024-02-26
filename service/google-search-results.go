@@ -4,18 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	jsoniter "github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
 
 	"google-search/service/builder"
 	"google-search/service/models"
 	"google-search/service/providers/googlesearch"
 	"google-search/service/validator"
-)
-
-const (
-	contentType = "Content-Type"
-	appType     = "application/json"
+	"google-search/service/writer"
 )
 
 type SearchCompositionHandler interface {
@@ -25,20 +20,20 @@ type Providers struct {
 	GoogleSearchClient googlesearch.GoogleSearchClient
 }
 
-func (p *Providers) GetSearchResults(writer http.ResponseWriter, request *http.Request, resultQuantity int) {
+func (p *Providers) GetSearchResults(rw http.ResponseWriter, request *http.Request, resultQuantity int) {
 	serviceRequest, err := validator.ValidateRequest(request.Body)
 	if err != nil {
-		WriteResponse(writer, builder.BuildResponse("❌ Cannot build Proper response"), http.StatusBadRequest)
+		writer.WriteResponse(rw, builder.BuildResponse("❌ Cannot build Proper response"), http.StatusBadRequest)
 		return
 	}
 
 	response, err := googleSearchResults(serviceRequest, resultQuantity, p.GoogleSearchClient)
 	if err != nil {
-		WriteResponse(writer, builder.BuildResponse("❌ Cannot build Proper response"), http.StatusInternalServerError)
+		writer.WriteResponse(rw, builder.BuildResponse("❌ Cannot build Proper response"), http.StatusInternalServerError)
 		return
 	}
 
-	WriteResponse(writer, response, http.StatusOK)
+	writer.WriteResponse(rw, response, http.StatusOK)
 	log.Println("💃🏻 ✅ Google Search Process successful")
 }
 
@@ -93,12 +88,6 @@ func mapGResultsToService(googleResults *models.GoogleSearchResponse, quantity i
 		ResponseTime:  googleResults.SearchInformation.SearchTime,
 		ResponseItems: responseItems,
 	}
-}
-func WriteResponse(rw http.ResponseWriter, resp interface{}, responseCode int) {
-	rw.WriteHeader(responseCode)
-	rw.Header().Set(contentType, appType)
-	bytes, _ := jsoniter.Marshal(resp)
-	rw.Write(bytes)
 }
 
 func NewSearchCompositionHandler(providers Providers) SearchCompositionHandler {

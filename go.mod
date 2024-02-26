@@ -6,7 +6,6 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-resty/resty/v2 v2.11.0
-	github.com/golang/mock v1.6.0
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/json-iterator/go v1.1.12
 	github.com/mitchellh/mapstructure v1.5.0

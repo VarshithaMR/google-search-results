@@ -19,13 +19,13 @@ const (
 )
 
 type SearchCompositionHandler interface {
-	GetGoogleSearchResults(http.ResponseWriter, *http.Request, int)
+	GetSearchResults(http.ResponseWriter, *http.Request, int)
 }
 type Providers struct {
 	GoogleSearchClient googlesearch.GoogleSearchClient
 }
 
-func (p *Providers) GetGoogleSearchResults(writer http.ResponseWriter, request *http.Request, resultQuantity int) {
+func (p *Providers) GetSearchResults(writer http.ResponseWriter, request *http.Request, resultQuantity int) {
 	serviceRequest, err := validator.ValidateRequest(request.Body)
 	if err != nil {
 		WriteResponse(writer, builder.BuildResponse("❌ Cannot build Proper response"), http.StatusBadRequest)
@@ -60,7 +60,7 @@ func googleSearchResults(serviceRequest *models.HandlerRequest, resultQuantity i
 	}
 
 	//call google api
-	results, err := provider.GetSearchResults(serviceRequest.Query, quantity)
+	results, err := provider.GetGoogleSearchResults(serviceRequest.Query, quantity)
 	if err != nil {
 		return nil, err
 	}

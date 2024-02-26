@@ -81,7 +81,7 @@ func TestSearch_GetSearchResults_10(t *testing.T) {
 	httpmock.RegisterResponder(http.MethodGet, mockURLEndpoint, httpmock.ResponderFromResponse(resp))
 
 	client := GoogleMockClient(restyClient)
-	result, err := client.GetSearchResults(mockQuery, 10)
+	result, err := client.GetGoogleSearchResults(mockQuery, 10)
 	fmt.Println(result)
 
 	// Assertions
@@ -113,7 +113,7 @@ func TestSearch_GetSearchResults_5(t *testing.T) {
 	httpmock.RegisterResponder(http.MethodGet, mockURLEndpoint, httpmock.ResponderFromResponse(resp))
 
 	client := GoogleMockClient(restyClient)
-	result, err := client.GetSearchResults(mockQuery, 5)
+	result, err := client.GetGoogleSearchResults(mockQuery, 5)
 	fmt.Println(result)
 
 	// Assertions
@@ -130,7 +130,7 @@ func TestSearch_GetSearchResults_Empty(t *testing.T) {
 	httpmock.RegisterResponder(http.MethodGet, mockURLEndpoint, nil)
 
 	client := GoogleMockClient(restyClient)
-	result, err := client.GetSearchResults(mockQuery, 5)
+	result, err := client.GetGoogleSearchResults(mockQuery, 5)
 	fmt.Println(result)
 
 	// Assertions

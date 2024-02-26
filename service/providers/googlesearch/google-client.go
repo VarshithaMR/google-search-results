@@ -26,14 +26,14 @@ const (
 )
 
 type GoogleSearchClient interface {
-	GetSearchResults(string, int) (*models.GoogleSearchResponse, error)
+	GetGoogleSearchResults(string, int) (*models.GoogleSearchResponse, error)
 }
 
 type search struct {
 	httpClient *resty.Client
 }
 
-func (g *search) GetSearchResults(query string, quantity int) (*models.GoogleSearchResponse, error) {
+func (g *search) GetGoogleSearchResults(query string, quantity int) (*models.GoogleSearchResponse, error) {
 	baseUrl := g.httpClient.BaseURL
 	response, err := g.httpClient.R().
 		SetHeader(contentType, appType).

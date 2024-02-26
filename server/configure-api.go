@@ -23,7 +23,7 @@ func configureApi(handler api.DomainHandler, contextRoot string, service service
 		Method: api.GET,
 		Path:   endpoint,
 		Handler: func(ctx *gin.Context) {
-			service.GetGoogleSearchResults(ctx.Writer, ctx.Request, defaultQuantity)
+			service.GetSearchResults(ctx.Writer, ctx.Request, defaultQuantity)
 		},
 		Middleware: []gin.HandlerFunc{},
 	}

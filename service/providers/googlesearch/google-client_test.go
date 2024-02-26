@@ -59,7 +59,7 @@ func TestNewGoogleClient(test *testing.T) {
 	}
 }
 
-func TestSearch_GetSearchResults_10(t *testing.T) {
+func TestSearch_GetGoogleSearchResults_10(t *testing.T) {
 	restyClient := resty.New()
 	jsonResponse, err := os.ReadFile(mockResponse10)
 	if err != nil {
@@ -91,7 +91,7 @@ func TestSearch_GetSearchResults_10(t *testing.T) {
 	assert.Equal(t, 10, len(result.ResponseItems))
 }
 
-func TestSearch_GetSearchResults_5(t *testing.T) {
+func TestSearch_GetGoogleSearchResults_5(t *testing.T) {
 	restyClient := resty.New()
 	jsonResponse, err := os.ReadFile(mockResponse5)
 	if err != nil {
@@ -123,7 +123,7 @@ func TestSearch_GetSearchResults_5(t *testing.T) {
 	assert.Equal(t, 5, len(result.ResponseItems))
 }
 
-func TestSearch_GetSearchResults_Empty(t *testing.T) {
+func TestSearch_GetGoogleSearchResults_Empty(t *testing.T) {
 	restyClient := resty.New()
 	httpmock.ActivateNonDefault(restyClient.GetClient())
 	defer httpmock.DeactivateAndReset()

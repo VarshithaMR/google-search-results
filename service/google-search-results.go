@@ -27,7 +27,7 @@ func (p *Providers) GetSearchResults(rw http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	response, err := googleSearchResults(serviceRequest, resultQuantity, p.GoogleSearchClient)
+	response, err := GoogleSearchResults(serviceRequest, resultQuantity, p.GoogleSearchClient)
 	if err != nil {
 		writer.WriteResponse(rw, builder.BuildResponse("❌ Cannot build Proper response"), http.StatusInternalServerError)
 		return
@@ -37,11 +37,16 @@ func (p *Providers) GetSearchResults(rw http.ResponseWriter, request *http.Reque
 	log.Println("💃🏻 ✅ Google Search Process successful")
 }
 
-func googleSearchResults(serviceRequest *models.HandlerRequest, resultQuantity int, provider googlesearch.GoogleSearchClient) (*models.HandlerResponse, error) {
+func GoogleSearchResults(serviceRequest *models.HandlerRequest, resultQuantity int, provider googlesearch.GoogleSearchClient) (*models.HandlerResponse, error) {
 	var (
 		quantity      int
 		finalResponse *models.HandlerResponse
 	)
+
+	if serviceRequest == nil {
+		resultError := "❌ empty request"
+		return nil, errors.New(resultError)
+	}
 
 	if serviceRequest.ResultQuantity == nil {
 		//default quantity of items

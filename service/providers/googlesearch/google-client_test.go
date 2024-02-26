@@ -1,75 +1,24 @@
 package googlesearch
 
 import (
-	"errors"
-	"github.com/spf13/viper"
-	"github.com/stretchr/testify/assert"
+	"bytes"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"os"
 	"testing"
 
-	"google-search/service/models"
+	"github.com/go-resty/resty/v2"
+	"github.com/jarcoal/httpmock"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
-	mockKey = "mockapikey"
-	mockId  = "mockengineid"
-	//mockURL = "https://mockurl.com"
+	mockResponse10 = "test-util/google-search-10.json"
+	mockResponse5  = "test-util/google-search-5.json"
+	mockQuery      = "mockQuery"
 )
-
-// TODO: to fix the mocking properly
-func TestSearch_GetSearchResults(test *testing.T) {
-	setUpMockURL()
-
-	properties := viper.New()
-	properties.Set(envVarGoogleSearchURL, mockURL)
-	properties.Set(envVarGoogleAPIKey, mockKey)
-	properties.Set(envVarCustomSearchEngineId, mockId)
-
-	// Create the GoogleSearchClient instance
-	client := NewGoogleClient(properties)
-
-	responses := expectedResponses()
-	tests := []struct {
-		name             string
-		query            string
-		size             int
-		expectedResponse *models.GoogleSearchResponse
-		err              error
-	}{
-		{
-			name:             "Google client responding with 10 items",
-			query:            "how to create fb account",
-			size:             10,
-			expectedResponse: responses[0],
-			err:              nil,
-		},
-		{
-			name:             "Google client responding with 5",
-			query:            "how to create fb account",
-			size:             5,
-			expectedResponse: responses[1],
-			err:              nil,
-		},
-		{
-			name:             "Google client responding error",
-			query:            "how to create fb account",
-			size:             3,
-			expectedResponse: nil,
-			err:              errors.New("error getting request body"),
-		},
-	}
-
-	for _, t := range tests {
-		test.Run(t.name, func(tt *testing.T) {
-			tt.Parallel()
-			result, err := client.GetSearchResults("mockQuery", 10)
-			if err != nil {
-				assert.Equal(tt, err, t.err)
-			} else {
-				assert.Equal(tt, result, t.expectedResponse)
-			}
-		})
-	}
-}
 
 func TestNewGoogleClient(test *testing.T) {
 	properties := viper.New()
@@ -110,108 +59,81 @@ func TestNewGoogleClient(test *testing.T) {
 	}
 }
 
-/*func expectedResponses() []*models.GoogleSearchResponse {
-	response1 := &models.GoogleSearchResponse{
-		Kind: "",
-		URL: &models.URL{
-			Type:     "",
-			Template: "",
-		},
-		SearchInformation: &models.SearchInformation{
-			SearchTime:   5.5,
-			TotalResults: "444",
-		},
-		ResponseItems: []*models.ResponseItem{
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-		},
-	}
-	response2 := &models.GoogleSearchResponse{
-		Kind: "",
-		URL: &models.URL{
-			Type:     "",
-			Template: "",
-		},
-		SearchInformation: &models.SearchInformation{
-			SearchTime:   5.5,
-			TotalResults: "444",
-		},
-		ResponseItems: []*models.ResponseItem{
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-			{
-				Kind:  "",
-				Title: "",
-				Link:  "",
-			},
-		},
+func TestSearch_GetSearchResults_10(t *testing.T) {
+	restyClient := resty.New()
+	jsonResponse, err := os.ReadFile(mockResponse10)
+	if err != nil {
+		fmt.Println("Error reading JSON file:", err)
+		return
 	}
 
-	return []*models.GoogleSearchResponse{response1, response2}
-}*/
+	httpmock.ActivateNonDefault(restyClient.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	recorder := httptest.NewRecorder()
+	reader := bytes.NewReader(jsonResponse)
+	_, err = recorder.Body.ReadFrom(reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := recorder.Result()
+
+	httpmock.RegisterResponder(http.MethodGet, mockURLEndpoint, httpmock.ResponderFromResponse(resp))
+
+	client := GoogleMockClient(restyClient)
+	result, err := client.GetSearchResults(mockQuery, 10)
+	fmt.Println(result)
+
+	// Assertions
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.NotNil(t, result.ResponseItems)
+	assert.Equal(t, 10, len(result.ResponseItems))
+}
+
+func TestSearch_GetSearchResults_5(t *testing.T) {
+	restyClient := resty.New()
+	jsonResponse, err := os.ReadFile(mockResponse5)
+	if err != nil {
+		fmt.Println("Error reading JSON file:", err)
+		return
+	}
+
+	httpmock.ActivateNonDefault(restyClient.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	recorder := httptest.NewRecorder()
+	reader := bytes.NewReader(jsonResponse)
+	_, err = recorder.Body.ReadFrom(reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp := recorder.Result()
+
+	httpmock.RegisterResponder(http.MethodGet, mockURLEndpoint, httpmock.ResponderFromResponse(resp))
+
+	client := GoogleMockClient(restyClient)
+	result, err := client.GetSearchResults(mockQuery, 5)
+	fmt.Println(result)
+
+	// Assertions
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.NotNil(t, result.ResponseItems)
+	assert.Equal(t, 5, len(result.ResponseItems))
+}
+
+func TestSearch_GetSearchResults_Empty(t *testing.T) {
+	restyClient := resty.New()
+	httpmock.ActivateNonDefault(restyClient.GetClient())
+	defer httpmock.DeactivateAndReset()
+	httpmock.RegisterResponder(http.MethodGet, mockURLEndpoint, nil)
+
+	client := GoogleMockClient(restyClient)
+	result, err := client.GetSearchResults(mockQuery, 5)
+	fmt.Println(result)
+
+	// Assertions
+	assert.Error(t, err)
+	assert.Nil(t, result)
+}

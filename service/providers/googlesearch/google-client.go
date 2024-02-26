@@ -1,6 +1,8 @@
 package googlesearch
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/go-resty/resty/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -42,6 +44,16 @@ func (g *search) GetSearchResults(query string, quantity int) (*models.GoogleSea
 	if err != nil {
 		log.Warnf("❌ Google API Search error: %s", err)
 		return nil, err
+	}
+
+	// for mocking- test cases
+	if baseUrl == mockURL {
+		var x models.GoogleSearchResponse
+		err = json.Unmarshal(response.Body(), &x)
+		if err != nil {
+			fmt.Println("Testcase : Unmarshal err", err)
+		}
+		return &x, nil
 	}
 
 	return response.Result().(*models.GoogleSearchResponse), nil

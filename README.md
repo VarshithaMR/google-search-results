@@ -4,17 +4,23 @@ This service allows users to input specific search queries, and in return, it fe
 This tool streamlines the process of extracting valuable information from Google, providing you with a quick and efficient summary of the number of titles associated with your search terms. 
 
 # Tech
-goversion : 1.21.7
-OS - macOs
-framework - gin
-provider : google search
-IDE : IntelliJ IDEA
+* goversion : 1.21.7
+* OS - macOs
+* framework - gin
+* provider : google search
+* IDE : IntelliJ IDEA
 
 # Run the service
 go run cmd/config-loader.go cmd/main.go
 
+# Highlights
+1. Resty client
+2. jarcoal/httpmock
+3. Rest API
+
 # FAQ
-1.How to create google api key and custom search engine id used in .env file? : https://support.google.com/googleapi/answer/6158862?hl=en
+1. How to create google api key and custom search engine id used in .env file? : https://support.google.com/googleapi/answer/6158862?hl=en
+2. How to check test coverage? : run "/scripts/test-coverage.sh" script
 
 # Images
 1. Hitting google/ provider api
